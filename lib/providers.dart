@@ -1,10 +1,13 @@
+// Copyright 2024 The Flutter Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 import 'dart:convert';
-import 'dart:math'; // Add this import
+import 'dart:math';
 
 import 'package:built_collection/built_collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'isolates.dart';
@@ -64,7 +67,7 @@ class Size extends _$Size {
 
 @riverpod
 Stream<model.WorkQueue> workQueue(Ref ref) async* {
-  // Modify this provider
+  final workers = ref.watch(workerCountProvider);
   final size = ref.watch(sizeProvider);
   final wordListAsync = ref.watch(wordListProvider);
   final emptyCrossword = model.Crossword.crossword(
@@ -84,6 +87,7 @@ Stream<model.WorkQueue> workQueue(Ref ref) async* {
     data: (wordList) => exploreCrosswordSolutions(
       crossword: emptyCrossword,
       wordList: wordList,
+      maxWorkerCount: workers.count,
     ),
     error: (error, stackTrace) async* {
       debugPrint('Error loading word list: $error');
@@ -95,9 +99,9 @@ Stream<model.WorkQueue> workQueue(Ref ref) async* {
   );
 
   ref.read(endTimeProvider.notifier).end();
-} // To here.
+}
 
-@Riverpod(keepAlive: true) // Add from here to end of file
+@Riverpod(keepAlive: true)
 class StartTime extends _$StartTime {
   @override
   DateTime? build() => _start;
@@ -186,4 +190,34 @@ class DisplayInfo extends _$DisplayInfo {
         error: (error, stackTrace) => model.DisplayInfo.empty,
         loading: () => model.DisplayInfo.empty,
       );
+}
+
+enum BackgroundWorkers {
+  one(1),
+  two(2),
+  four(4),
+  eight(8),
+  sixteen(16),
+  thirtyTwo(32),
+  sixtyFour(64),
+  oneTwentyEight(128);
+
+  const BackgroundWorkers(this.count);
+
+  final int count;
+  String get label => count.toString();
+}
+
+/// A provider that holds the current number of background workers to use.
+@Riverpod(keepAlive: true)
+class WorkerCount extends _$WorkerCount {
+  var _count = BackgroundWorkers.four;
+
+  @override
+  BackgroundWorkers build() => _count;
+
+  void setCount(BackgroundWorkers count) {
+    _count = count;
+    ref.invalidateSelf();
+  }
 }

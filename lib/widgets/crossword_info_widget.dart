@@ -12,6 +12,7 @@ class CrosswordInfoWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final size = ref.watch(sizeProvider);
     final displayInfo = ref.watch(displayInfoProvider);
+    final workerCount = ref.watch(workerCountProvider).label; // Add this line
     final startTime = ref.watch(startTimeProvider);
     final endTime = ref.watch(endTimeProvider);
     final remaining = ref.watch(expectedRemainingTimeProvider);
@@ -59,6 +60,11 @@ class CrosswordInfoWidget extends ConsumerWidget {
                       label: 'Grid filled',
                       value: displayInfo.gridFilledPercentage,
                     ),
+                    _CrosswordInfoRichText(
+                      // Add from here
+                      label: 'Max worker count',
+                      value: workerCount,
+                    ), // To here.
                     switch ((startTime, endTime)) {
                       (null, _) => _CrosswordInfoRichText(
                         label: 'Time elapsed',
