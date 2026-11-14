@@ -1,11 +1,8 @@
-// Copyright 2024 The Flutter Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 import 'package:characters/characters.dart';
+import 'package:intl/intl.dart'; // Add this import
 
 part 'model.g.dart';
 
@@ -503,6 +500,58 @@ abstract class WorkQueue implements Built<WorkQueue, WorkQueueBuilder> {
   WorkQueue._();
 }
 
+// Add from here.
+/// Display information for the current state of the crossword solve.
+abstract class DisplayInfo implements Built<DisplayInfo, DisplayInfoBuilder> {
+  static Serializer<DisplayInfo> get serializer => _$displayInfoSerializer;
+
+  /// The number of words in the grid.
+  String get wordsInGridCount;
+
+  /// The number of candidate words.
+  String get candidateWordsCount;
+
+  /// The number of locations to explore.
+  String get locationsToExploreCount;
+
+  /// The number of known bad locations.
+  String get knownBadLocationsCount;
+
+  /// The percentage of the grid filled.
+  String get gridFilledPercentage;
+
+  /// Construct a [DisplayInfo] instance from a [WorkQueue].
+  factory DisplayInfo.from({required WorkQueue workQueue}) {
+    final gridFilled =
+        (workQueue.crossword.characters.length /
+        (workQueue.crossword.width * workQueue.crossword.height));
+    final fmt = NumberFormat.decimalPattern();
+
+    return DisplayInfo(
+      (b) => b
+        ..wordsInGridCount = fmt.format(workQueue.crossword.words.length)
+        ..candidateWordsCount = fmt.format(workQueue.candidateWords.length)
+        ..locationsToExploreCount = fmt.format(workQueue.locationsToTry.length)
+        ..knownBadLocationsCount = fmt.format(workQueue.badLocations.length)
+        ..gridFilledPercentage = '${(gridFilled * 100).toStringAsFixed(2)}%',
+    );
+  }
+
+  /// An empty [DisplayInfo] instance.
+  static DisplayInfo get empty => DisplayInfo(
+    (b) => b
+      ..wordsInGridCount = '0'
+      ..candidateWordsCount = '0'
+      ..locationsToExploreCount = '0'
+      ..knownBadLocationsCount = '0'
+      ..gridFilledPercentage = '0%',
+  );
+
+  factory DisplayInfo([void Function(DisplayInfoBuilder)? updates]) =
+      _$DisplayInfo;
+  DisplayInfo._();
+} // To here.
+
 /// Construct the serialization/deserialization code for the data model.
 @SerializersFor([
   Location,
@@ -510,5 +559,6 @@ abstract class WorkQueue implements Built<WorkQueue, WorkQueueBuilder> {
   CrosswordWord,
   CrosswordCharacter,
   WorkQueue,
+  DisplayInfo, // Add this line.
 ])
 final Serializers serializers = _$serializers;
