@@ -50,4 +50,100 @@ final class WordListProvider
   }
 }
 
-String _$wordListHash() => r'07003444d7241448561b638500001e31610b4717';
+String _$wordListHash() => r'8e3e9cd4555ba4baa045ccddd8dd45a25cfb6653';
+
+/// A provider that holds the current size of the crossword to generate.
+
+@ProviderFor(Size)
+final sizeProvider = SizeProvider._();
+
+/// A provider that holds the current size of the crossword to generate.
+final class SizeProvider extends $NotifierProvider<Size, CrosswordSize> {
+  /// A provider that holds the current size of the crossword to generate.
+  SizeProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'sizeProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$sizeHash();
+
+  @$internal
+  @override
+  Size create() => Size();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(CrosswordSize value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<CrosswordSize>(value),
+    );
+  }
+}
+
+String _$sizeHash() => r'e551985965bf4119e8d90c0e8aa4f4d68a555b73';
+
+/// A provider that holds the current size of the crossword to generate.
+
+abstract class _$Size extends $Notifier<CrosswordSize> {
+  CrosswordSize build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<CrosswordSize, CrosswordSize>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<CrosswordSize, CrosswordSize>,
+              CrosswordSize,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}
+
+@ProviderFor(crossword)
+final crosswordProvider = CrosswordProvider._();
+
+final class CrosswordProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<model.Crossword>,
+          model.Crossword,
+          Stream<model.Crossword>
+        >
+    with $FutureModifier<model.Crossword>, $StreamProvider<model.Crossword> {
+  CrosswordProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'crosswordProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$crosswordHash();
+
+  @$internal
+  @override
+  $StreamProviderElement<model.Crossword> $createElement(
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
+
+  @override
+  Stream<model.Crossword> create(Ref ref) {
+    return crossword(ref);
+  }
+}
+
+String _$crosswordHash() => r'5de9f05091b3f0dad7c14a322ba090df2e63fae0';
