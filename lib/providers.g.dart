@@ -50,7 +50,7 @@ final class WordListProvider
   }
 }
 
-String _$wordListHash() => r'8e3e9cd4555ba4baa045ccddd8dd45a25cfb6653';
+String _$wordListHash() => r'07003444d7241448561b638500001e31610b4717';
 
 /// A provider that holds the current size of the crossword to generate.
 
@@ -146,4 +146,4 @@ final class CrosswordProvider
   }
 }
 
-String _$crosswordHash() => r'5de9f05091b3f0dad7c14a322ba090df2e63fae0';
+String _$crosswordHash() => r'8e2df416519f01ee1d6c1b64659f687d37cc07f2';
